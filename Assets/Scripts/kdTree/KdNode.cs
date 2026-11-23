@@ -6,6 +6,8 @@ public class KdNode {
     public KdNode left, right;
     public List<Tri> tris;
     public int depth;
+    public int splitAxis;
+    public float splitValue;
     public bool IsLeaf => left == null;
 
     public KdNode(List<Tri> tris, int depth) {

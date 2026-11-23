@@ -13,6 +13,8 @@ public class KdTreeController : MonoBehaviour
     private GameObject visualizationRoot;
     private Mesh wireMesh;
 
+    public KdNode Root => tree?.root;
+
     private void Start()
     {
         var triangles = new List<Tri>();

@@ -44,6 +44,11 @@ public class KdTree
         var leftTris = sorted.GetRange(0, split);
         var rightTris = sorted.GetRange(split, sorted.Count - split);
 
+        Vector3 leftCenter = (sorted[split - 1].a + sorted[split - 1].b + sorted[split - 1].c) / 3f;
+        Vector3 rightCenter = (sorted[split].a + sorted[split].b + sorted[split].c) / 3f;
+        node.splitAxis = axis;
+        node.splitValue = (leftCenter[axis] + rightCenter[axis]) * 0.5f;
+
         node.left = BuildNode(leftTris, depth + 1);
         node.right = BuildNode(rightTris, depth + 1);
 
