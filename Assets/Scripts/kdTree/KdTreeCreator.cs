@@ -13,7 +13,8 @@ public class KdTreeController : MonoBehaviour
     private GameObject visualizationRoot;
     private Mesh wireMesh;
 
-    public KdNode Root => tree?.root;
+    // Read-only access so the raycast controller can query the completed tree.
+    public KdTree Tree => tree;
 
     private void Start()
     {

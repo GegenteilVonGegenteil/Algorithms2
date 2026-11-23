@@ -2,6 +2,7 @@ using UnityEngine;
 
 public struct RayData
 {
+    // Only store the values needed by the custom raycast algorithm.
     public Vector3 origin;
     public Vector3 direction;
 
