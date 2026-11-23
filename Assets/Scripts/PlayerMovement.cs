@@ -5,18 +5,20 @@ public class PlayerMovement : MonoBehaviour
 {
     public InputActionReference move;
     public InputActionReference look;
+    public InputActionReference zoom;
 
-    [SerializeField] private Transform cameraTransform;
     [SerializeField, Min(0f)] private float movementSpeed = 5f;
     [SerializeField, Min(0f)] private float mouseSensitivity = 0.1f;
     [SerializeField, Range(0f, 90f)] private float maximumPitch = 89f;
+    [SerializeField] Camera playerCamera;
+    [SerializeField] private float zoomSpeed = 5f;
 
     private float pitch;
 
     private void Start()
     {
-        if (cameraTransform == null)
-            cameraTransform = GetComponentInChildren<Camera>().transform;
+        if (playerCamera == null)
+            playerCamera = GetComponentInChildren<Camera>();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -38,6 +40,13 @@ public class PlayerMovement : MonoBehaviour
             pitch - lookInput.y * mouseSensitivity,
             -maximumPitch,
             maximumPitch);
-        cameraTransform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+        playerCamera.transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+
+        float zoomInput = zoom.action.ReadValue<float>();
+        if (zoomInput != 0f)
+        {
+            playerCamera.fieldOfView = Mathf.Clamp(
+                playerCamera.fieldOfView - zoomInput * zoomSpeed, 20f, 60f);
+        }
     }
 }
