@@ -70,11 +70,16 @@ public class KdTreeController : MonoBehaviour
         }
 
         if (toggled)
-        {
-            showCells = !showCells;
-            if (visualizationRoot != null)
-                visualizationRoot.SetActive(showCells);
-        }
+            ToggleVisualization();
+    }
+
+    public void ToggleVisualization()
+    {
+        // Switch the saved state and show or hide the complete wireframe object.
+        showCells = !showCells;
+
+        if (visualizationRoot != null)
+            visualizationRoot.SetActive(showCells);
     }
 
     private void OnDestroy()
