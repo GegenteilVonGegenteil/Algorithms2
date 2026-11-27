@@ -1,12 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// class representing a node in the kd-tree
 public class KdTree
 {
+    // starting point of the tree, which contains all triangles and is split recursively into child nodes
     public KdNode root;
+    // maximum number of triangles allowed in a leaf node before it is split into child nodes
     private int maxLeafSize;
+    // maximum depth of the tree, which limits how many times a node can be split into child nodes
     private int maxDepth;
 
+    // builds the kd-tree from a list of triangles, with optional parameters for maximum leaf size and maximum depth
     public void Build(List<Tri> tris, int maxLeafSize = 4, int maxDepth = 24)
     {
         this.maxLeafSize = Mathf.Max(1, maxLeafSize);
@@ -16,6 +21,7 @@ public class KdTree
             : BuildNode(tris, 0);
     }
 
+    // recursively builds a node in the kd-tree from a list of triangles and its depth in the tree
     private KdNode BuildNode(List<Tri> tris, int depth)
     {
         var node = new KdNode(tris, depth);

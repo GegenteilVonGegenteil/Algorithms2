@@ -2,13 +2,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// class that creates a kd-tree from all meshes in the scene and provides a visualization of the tree
 public class KdTreeController : MonoBehaviour
 {
+    // input action reference for toggling the visualization of the kd-tree cells
     public InputActionReference toggleCells;
+
+    // maximum number of triangles allowed in a leaf node before it is split into child nodes
     public int maxLeafSize = 4;
+    // maximum depth of the tree, which limits how many times a node can be split into child nodes
     public int maxDepth = 24;
+    // boolean to determine whether the visualization of the kd-tree cells should be shown or hidden
     public bool showCells = true;
 
+    // private fields for the kd-tree, the root object of the visualization, and the wireframe mesh used for visualization
     private KdTree tree;
     private GameObject visualizationRoot;
     private Mesh wireMesh;
@@ -16,6 +23,7 @@ public class KdTreeController : MonoBehaviour
     // Read-only access so the raycast controller can query the completed tree.
     public KdTree Tree => tree;
 
+    // initializes the kd-tree by collecting all triangles from meshes in the scene, building the tree, and creating a visualization of the tree
     private void Start()
     {
         var triangles = new List<Tri>();
@@ -31,6 +39,12 @@ public class KdTreeController : MonoBehaviour
                 Debug.LogWarning(
                     $"Skipping unreadable mesh '{mesh.name}' on '{meshFilter.name}'.",
                     meshFilter);
+                continue;
+            }
+
+            // check if the meshes object is called "Floor" and skip it if so
+            if (meshFilter.gameObject.name.ToLower().Contains("ground") || meshFilter.gameObject.name.ToLower().Contains("floor"))
+            {
                 continue;
             }
 
@@ -56,6 +70,7 @@ public class KdTreeController : MonoBehaviour
             visualizationRoot.SetActive(showCells);
     }
 
+    // checks for input to toggle the visualization of the kd-tree cells
     private void Update()
     {
         bool toggled = toggleCells != null &&
@@ -73,6 +88,7 @@ public class KdTreeController : MonoBehaviour
             ToggleVisualization();
     }
 
+    // function to toggle the visualization of the kd-tree cells on or off
     public void ToggleVisualization()
     {
         // Switch the saved state and show or hide the complete wireframe object.
@@ -82,14 +98,7 @@ public class KdTreeController : MonoBehaviour
             visualizationRoot.SetActive(showCells);
     }
 
-    private void OnDestroy()
-    {
-        if (visualizationRoot != null)
-            Destroy(visualizationRoot);
-        if (wireMesh != null)
-            Destroy(wireMesh);
-    }
-
+    // creates a visualization of the kd-tree by generating a wireframe mesh for each node in the tree and adding it to the scene
     private void CreateVisualization()
     {
         if (tree == null || tree.root == null)
@@ -100,6 +109,7 @@ public class KdTreeController : MonoBehaviour
         CreateWireMesh("KD-Tree Cells", wireMesh);
     }
 
+    // creates a wireframe mesh for the kd-tree by collecting the edges of each node's bounding box and adding them to a mesh
     private Mesh CreateTreeMesh(KdNode node)
     {
         var vertices = new List<Vector3>();
@@ -113,6 +123,7 @@ public class KdTreeController : MonoBehaviour
         return mesh;
     }
 
+    // recursively collects the edges of each node's bounding box and adds them to a list of vertices and indices for the wireframe mesh
     private void CollectNodeEdges(
         KdNode node,
         List<Vector3> vertices,
@@ -126,6 +137,7 @@ public class KdTreeController : MonoBehaviour
         CollectNodeEdges(node.right, vertices, indices);
     }
 
+    // adds the edges of a bounding box to a list of vertices and indices for the wireframe mesh
     private void AddBox(
         Bounds bounds,
         List<Vector3> vertices,
@@ -159,6 +171,7 @@ public class KdTreeController : MonoBehaviour
         AddEdge(p100, p110, vertices, indices);
     }
 
+    // adds an edge between two points to a list of vertices and indices for the wireframe mesh
     private void AddEdge(
         Vector3 start,
         Vector3 end,
@@ -173,6 +186,7 @@ public class KdTreeController : MonoBehaviour
         indices.Add(startIndex + 1);
     }
 
+    // creates a new GameObject with a MeshFilter and MeshRenderer to display the wireframe mesh in the scene
     private void CreateWireMesh(string name, Mesh mesh)
     {
         var objectWithMesh = new GameObject(name);

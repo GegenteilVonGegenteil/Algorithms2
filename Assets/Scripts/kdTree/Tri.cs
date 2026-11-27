@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// struct to represent a triangle in 3D space
 public struct Tri
 {
     public Vector3 a;
