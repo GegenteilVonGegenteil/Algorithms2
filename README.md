@@ -32,3 +32,4 @@ The required Unity version is also listed in `ProjectSettings/ProjectVersion.txt
 | Left mouse button | Cast a ray |
 | `Space` | Cast a ray |
 | `K` | Show or hide the k-d tree wireframe |
+| `Q/E` | Zoom in/out on the Scene |
